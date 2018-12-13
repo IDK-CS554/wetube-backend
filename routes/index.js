@@ -10,7 +10,7 @@ const routes = app => {
   // app.use("/users", users);
   // app.use("/videos", videos);
   // get api data from graphgql
-  app.use("/graphql", data);
+  app.use("/data", data);
 };
 
 module.exports = {

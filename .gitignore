@@ -2,6 +2,8 @@
 # Created by https://www.gitignore.io/api/vim,node,code,emacs,macos,linux,windows,webstorm,sublimetext
 # Edit at https://www.gitignore.io/?templates=vim,node,code,emacs,macos,linux,windows,webstorm,sublimetext
 
+/ui
+
 ### Code ###
 # Visual Studio Code - https://code.visualstudio.com/
 .settings/

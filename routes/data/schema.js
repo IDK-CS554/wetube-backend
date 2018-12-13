@@ -52,9 +52,7 @@ const RootQuery = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         const response = await queryYT(args.q);
-        const videos = Videos(response);
-        console.log(videos);
-        return videos;
+        return Videos(response);
       }
     }
   }
