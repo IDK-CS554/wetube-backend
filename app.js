@@ -10,7 +10,7 @@ const { sockets } = require("./socket");
 // listen for REST calls
 // routes(app);
 // listen for socket events
-sockets(io);
+sockets(io.of('/final'));
 
 http.listen(PORT, () => {
   console.log(`Backend is listening on ${PORT}`);
