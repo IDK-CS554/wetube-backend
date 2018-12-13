@@ -9,7 +9,29 @@ const { nextRoomId } = require("./utils");
 const rooms = socket => {
   // TODO: temporary array to store rooms, should move this to redis or something
   let rooms = [];
-  socket.on("joinRoom", async payload => {
+
+	/**
+   * Rooms will be an array of objects with the following structure:
+   * [
+   *  {
+   *    roomId: *will be the room id*
+   *    creator: *id or username of the user who is the creator*
+   *    users: [
+   *      user,
+   *      user
+   *      *this array will be an array of users (defined below)*
+   *    ]
+   *  }
+   * ]
+   *
+   * User will be an object with the following properties:
+   * {
+   *   id: *uuid or simple numeric id*
+   *   username: *username/displayname*
+   * }
+	 */
+
+	socket.on("joinRoom", async payload => {
     const { roomId, username } = payload;
     console.log(`JOIN: ${username} wants to join room ${roomId}`);
     // io.sockets.emit("results", { res, username, message });
