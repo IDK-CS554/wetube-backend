@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 var http = require("http").Server(app);
@@ -8,9 +9,9 @@ const { routes } = require("./routes");
 const { sockets } = require("./socket");
 
 // listen for REST calls
-// routes(app);
+routes(app);
 // listen for socket events
-sockets(io.of('/final'));
+sockets(io.of("/final"));
 
 http.listen(PORT, () => {
   console.log(`Backend is listening on ${PORT}`);

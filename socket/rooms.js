@@ -41,8 +41,8 @@ const rooms = socket => {
     const { username } = payload;
     const newId = nextRoomId(rooms);
     rooms.push(newId);
-	  console.log(`CREATE: ${username} created a new room! ID: ${newId}`);
-	  socket.emit('createRoomSuccessful', newId);
+    console.log(`CREATE: ${username} created a new room! ID: ${newId}`);
+    socket.emit("createRoomSuccessful", newId);
   });
 };
 
