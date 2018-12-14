@@ -10,7 +10,7 @@ let nextRoomId = 1;
  *
  * @param {Socket.io Socket Object} socket
  */
-const rooms = socket => {
+const rooms = (socket, io) => {
   // TODO: temporary array to store rooms, should move this to redis or something
 
 	/**
@@ -36,7 +36,6 @@ const rooms = socket => {
 
 	socket.on("joinRoom", async payload => {
     const { roomId, username } = payload;
-    console.log(`JOIN: ${username} wants to join room ${roomId}`);
     const roomFound = roomsData.find(room => {
     	return room.id === roomId;
     });
@@ -47,21 +46,12 @@ const rooms = socket => {
 				username
 			};
 
-			roomsData = roomsData.map(room => {
-				if (room.id === roomId) {
-					return {
-						...room,
-						users: [
-							...room.users,
-							newUser
-						]
-					}
-				} else {
-					return room;
+			for (let i = 0; i < roomsData.length; i++) {
+				if (roomsData[i].id === roomId) {
+					roomsData[i].users.push(newUser);
 				}
-			});
-			console.log('room joined', roomsData);
-			socket.emit('joinRoomSuccessful', {roomId, username});
+			}
+			io.emit('joinRoomSuccessful', roomFound);
 		} else {
 			socket.emit('joinRoomUnsuccessful', roomId)
 		}
@@ -80,8 +70,6 @@ const rooms = socket => {
 	    creator: username,
 	    users: [newUser]
     });
-    console.log('new rooms', roomsData);
-    console.log(`CREATE: ${username} created a new room! ID: ${newId}`);
     socket.emit("createRoomSuccessful", newId);
   });
 };
