@@ -34,10 +34,12 @@ class Room {
     const removeIndex = this.users.map(u => u.userId).indexOf(userId);
     console.log("removeIndex", removeIndex);
     if (removeIndex !== -1) {
-      const username = this.users[removeIndex].username;
+      const user = this.users[removeIndex];
+      const username = user.username;
+      const userId = user.userId;
       this.users.splice(removeIndex, 1);
       const roomId = this.roomId;
-	    socket.to(`room${roomId}`).emit("userLeft", {username, roomId});
+	    socket.to(`room${roomId}`).emit("userLeft", {username, roomId, userId});
     };
   }
 
