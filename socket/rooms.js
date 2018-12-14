@@ -1,4 +1,4 @@
-const uuid = require('uuid/v4');
+const uuid = require("uuid/v4");
 // const { nextRoomId } = require("./utils");
 
 let roomsData = [];
@@ -13,7 +13,7 @@ let nextRoomId = 1;
 const rooms = (socket, io) => {
   // TODO: temporary array to store rooms, should move this to redis or something
 
-	/**
+  /**
    * Rooms will be an array of objects with the following structure:
    * [
    *  {
@@ -32,29 +32,29 @@ const rooms = (socket, io) => {
    *   id: *uuid or simple numeric id*
    *   username: *username/displayname*
    * }
-	 */
+   */
 
-	socket.on("joinRoom", async payload => {
+  socket.on("joinRoom", async payload => {
     const { roomId, username } = payload;
     const roomFound = roomsData.find(room => {
-    	return room.id === roomId;
+      return room.id === roomId;
     });
 
-		if (roomFound) {
-			const newUser = {
-				id: uuid(),
-				username
-			};
+    if (roomFound) {
+      const newUser = {
+        id: uuid(),
+        username
+      };
 
-			for (let i = 0; i < roomsData.length; i++) {
-				if (roomsData[i].id === roomId) {
-					roomsData[i].users.push(newUser);
-				}
-			}
-			io.emit('joinRoomSuccessful', roomFound);
-		} else {
-			socket.emit('joinRoomUnsuccessful', roomId)
-		}
+      for (let i = 0; i < roomsData.length; i++) {
+        if (roomsData[i].id === roomId) {
+          roomsData[i].users.push(newUser);
+        }
+      }
+      io.emit("joinRoomSuccessful", roomFound);
+    } else {
+      socket.emit("joinRoomUnsuccessful", roomId);
+    }
     // io.sockets.emit("results", { res, username, message });
   });
 
@@ -62,20 +62,23 @@ const rooms = (socket, io) => {
     const { username } = payload;
     const newId = nextRoomId++;
     const newUser = {
-    	id: uuid(),
-	    username
+      id: uuid(),
+      username
     };
     const newRoomData = {
-	    id: newId,
-	    creator: username,
-	    users: [newUser]
+      id: newId,
+      creator: username,
+      users: [newUser]
     };
-	  roomsData.push(newRoomData);
+    roomsData.push(newRoomData);
     socket.emit("createRoomSuccessful", newRoomData);
+  });
+  socket.on("joinVideoChat", payload => {
+    console.log("join video chat", payload);
   });
 };
 
 module.exports = {
   rooms,
-	roomsData
+  roomsData
 };
