@@ -9,13 +9,6 @@ const queryYT = async q => {
   return data["items"];
 };
 
-// const main = async () => {
-//   const res = await queryYT("hello");
-//   console.log(res);
-// };
-
-// main();
-
 module.exports = {
   queryYT
 };
