@@ -1,8 +1,6 @@
 const uuid = require("uuid/v4");
-// const { nextRoomId } = require("./utils");
-
-let roomsData = [];
-let nextRoomId = 1;
+const { RoomBuffer, Room, User } = require("./dataStuctures");
+let roomsData = new RoomBuffer();
 
 /**
  * Takes in a socket Object and modifies it to
@@ -12,67 +10,26 @@ let nextRoomId = 1;
  */
 const rooms = (socket, io) => {
   // TODO: temporary array to store rooms, should move this to redis or something
-
-  /**
-   * Rooms will be an array of objects with the following structure:
-   * [
-   *  {
-   *    roomId: *will be the room id*
-   *    creator: *id or username of the user who is the creator*
-   *    users: [
-   *      user,
-   *      user
-   *      *this array will be an array of users (defined below)*
-   *    ]
-   *  }
-   * ]
-   *
-   * User will be an object with the following properties:
-   * {
-   *   id: *uuid or simple numeric id*
-   *   username: *username/displayname*
-   * }
-   */
-
   socket.on("joinRoom", async payload => {
     const { roomId, username } = payload;
-    const roomFound = roomsData.find(room => {
-      return room.id === roomId;
-    });
+    const roomFound = roomsData.findRoom(roomId);
 
     if (roomFound) {
-      const newUser = {
-        id: uuid(),
-        username
-      };
-
-      for (let i = 0; i < roomsData.length; i++) {
-        if (roomsData[i].id === roomId) {
-          roomsData[i].users.push(newUser);
-        }
-      }
+      const newUser = new User(uuid(), username);
+      roomFound.addUser(newUser);
       io.emit("joinRoomSuccessful", roomFound);
     } else {
       socket.emit("joinRoomUnsuccessful", roomId);
     }
-    // io.sockets.emit("results", { res, username, message });
   });
 
   socket.on("createRoom", async payload => {
     const { username } = payload;
-    const newId = nextRoomId++;
-    const newUser = {
-      id: uuid(),
-      username
-    };
-    const newRoomData = {
-      id: newId,
-      creator: username,
-      users: [newUser]
-    };
-    roomsData.push(newRoomData);
-    socket.emit("createRoomSuccessful", newRoomData);
+    const newUser = new User(uuid(), username);
+    const newRoom = roomsData.addRoom(username, [newUser]);
+    socket.emit("createRoomSuccessful", newRoom);
   });
+
   socket.on("joinVideoChat", payload => {
     console.log("join video chat", payload);
   });
