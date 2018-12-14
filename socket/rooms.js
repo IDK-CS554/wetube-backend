@@ -41,8 +41,14 @@ const rooms = (socket, io) => {
     socket.to(`room${roomId}`).emit("receivedText", { username, text, roomId });
   });
 
+  socket.on("exitRoom", () => {
+	  const user = roomsData.findUser(socket.id);
+	  roomsData.removeUser(user, socket);
+  });
+
 	socket.on("disconnect", function() {
 		const user = roomsData.findUser(socket.id);
+		console.log('user disconnected', socket.id);
 		roomsData.removeUser(user, socket);
 	});
 };

@@ -11,7 +11,7 @@ class RoomBuffer {
    * @param {Room} room
    */
   addRoom(creator, users = []) {
-    const roomId = this.nextRoomId();
+    const roomId = this.rooms.length + 1;
     const newRoom = new Room(roomId, creator, users);
     this.rooms.push(newRoom);
     return newRoom;
@@ -27,7 +27,9 @@ class RoomBuffer {
 
 	removeUser(user, socket) {
 	  this.rooms.forEach(room => {
-	    room.removeUser(user.userId, socket);
+	    if (user) {
+		    room.removeUser(user.userId, socket);
+      }
     })
   }
 
