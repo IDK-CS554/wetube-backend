@@ -30,10 +30,23 @@ class Room {
     this.users.push(user);
   }
 
-  removeUser(userId) {
+  removeUser(userId, socket) {
     const removeIndex = this.users.map(u => u.userId).indexOf(userId);
     console.log("removeIndex", removeIndex);
-    if (removeIndex !== -1) this.users.splice(removeIndex, 1);
+    if (removeIndex !== -1) {
+      const username = this.users[removeIndex].username;
+      this.users.splice(removeIndex, 1);
+      const roomId = this.roomId;
+	    socket.to(`room${roomId}`).emit("userLeft", {username, roomId});
+    };
+  }
+
+  findUser(socketId) {
+    const userFound = this.users.find(user => {
+      return user.socketId === socketId;
+    });
+
+    return userFound === undefined ? false : userFound;
   }
 }
 

@@ -7,13 +7,9 @@ const { rooms } = require("./rooms");
  */
 const sockets = io => {
   io.on("connection", socket => {
-    console.log("a client connected to socket");
+    console.log("a client connected to socket", socket.id);
     // add room-related events to socket
     rooms(socket, io);
-
-    socket.on("disconnect", function() {
-      console.log("user disconnected");
-    });
   });
 };
 

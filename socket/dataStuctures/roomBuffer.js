@@ -17,6 +17,20 @@ class RoomBuffer {
     return newRoom;
   }
 
+  findUser(socketId) {
+    const roomWithUser = this.rooms.find(room => {
+      return room.findUser(socketId);
+    });
+
+    return roomWithUser === undefined ? null : roomWithUser.findUser(socketId);
+  };
+
+	removeUser(user, socket) {
+	  this.rooms.forEach(room => {
+	    room.removeUser(user.userId, socket);
+    })
+  }
+
   /**
    * Finds and returns a room by its roomId
    * @param {uuid} roomId

@@ -15,7 +15,7 @@ const rooms = (socket, io) => {
     const roomFound = roomsData.findRoom(roomId);
 
     if (roomFound) {
-      const newUser = new User(uuid(), username);
+      const newUser = new User(uuid(), username, socket.id);
       roomFound.addUser(newUser);
       socket.join(`room${roomId}`);
       io.to(`room${roomId}`).emit("joinRoomSuccessful", roomFound);
@@ -26,7 +26,7 @@ const rooms = (socket, io) => {
 
   socket.on("createRoom", async payload => {
     const { username } = payload;
-    const newUser = new User(uuid(), username);
+    const newUser = new User(uuid(), username, socket.id);
     const newRoom = roomsData.addRoom(username, [newUser]);
     socket.join(`room${newRoom.roomId}`);
     socket.emit("createRoomSuccessful", newRoom);
@@ -40,6 +40,11 @@ const rooms = (socket, io) => {
     const { text, roomId, username } = payload;
     socket.to(`room${roomId}`).emit("receivedText", { username, text, roomId });
   });
+
+	socket.on("disconnect", function() {
+		const user = roomsData.findUser(socket.id);
+		roomsData.removeUser(user, socket);
+	});
 };
 
 module.exports = {
