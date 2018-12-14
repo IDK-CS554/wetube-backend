@@ -65,12 +65,13 @@ const rooms = (socket, io) => {
     	id: uuid(),
 	    username
     };
-	  roomsData.push({
+    const newRoomData = {
 	    id: newId,
 	    creator: username,
 	    users: [newUser]
-    });
-    socket.emit("createRoomSuccessful", newId);
+    };
+	  roomsData.push(newRoomData);
+    socket.emit("createRoomSuccessful", newRoomData);
   });
 };
 
