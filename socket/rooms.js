@@ -87,5 +87,6 @@ const rooms = socket => {
 };
 
 module.exports = {
-  rooms
+  rooms,
+	roomsData
 };
