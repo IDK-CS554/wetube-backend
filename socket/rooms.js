@@ -1,6 +1,7 @@
 const uuid = require("uuid/v4");
 const { RoomBuffer, Room, User } = require("./dataStuctures");
 let roomsData = new RoomBuffer();
+// TODO: temporary array to store rooms, should move this to redis or something
 
 /**
  * Takes in a socket Object and modifies it to
@@ -9,7 +10,6 @@ let roomsData = new RoomBuffer();
  * @param {Socket.io Socket Object} socket
  */
 const rooms = (socket, io) => {
-  // TODO: temporary array to store rooms, should move this to redis or something
   socket.on("joinRoom", async payload => {
     const { roomId, username } = payload;
     const roomFound = roomsData.findRoom(roomId);
@@ -29,7 +29,7 @@ const rooms = (socket, io) => {
     const newUser = new User(uuid(), username, socket.id);
     const newRoom = roomsData.addRoom(username, [newUser]);
     socket.join(`room${newRoom.roomId}`);
-    socket.emit("createRoomSuccessful", newRoom);
+    socket.emit("createRoomSuccessful", {newRoom, username});
   });
 
   socket.on("joinVideoChat", payload => {

@@ -20,10 +20,12 @@
  */
 
 class Room {
-  constructor(roomId, creator, users = []) {
+  constructor(roomId, creator, users = [], time = 0, videoId = "") {
     this.roomId = roomId;
     this.creator = creator;
     this.users = users;
+    this.videoId = videoId;
+    this.time = time;
   }
 
   addUser(user) {
