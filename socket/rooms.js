@@ -29,7 +29,7 @@ const rooms = (socket, io) => {
     const newUser = new User(uuid(), username, socket.id);
     const newRoom = roomsData.addRoom(username, [newUser]);
     socket.join(`room${newRoom.roomId}`);
-    socket.emit("createRoomSuccessful", {newRoom, username});
+    socket.emit("createRoomSuccessful", { newRoom, username });
   });
 
   socket.on("joinVideoChat", payload => {
@@ -41,16 +41,21 @@ const rooms = (socket, io) => {
     socket.to(`room${roomId}`).emit("receivedText", { username, text, roomId });
   });
 
-  socket.on("exitRoom", () => {
-	  const user = roomsData.findUser(socket.id);
-	  roomsData.removeUser(user, socket);
+  socket.on("changeRoomType", payload => {
+    const { roomId, videoId } = payload;
+    io.in(`room${roomId}`).emit("changeRoomType", { roomId, videoId });
   });
 
-	socket.on("disconnect", function() {
-		const user = roomsData.findUser(socket.id);
-		console.log('user disconnected', socket.id);
-		roomsData.removeUser(user, socket);
-	});
+  socket.on("exitRoom", () => {
+    const user = roomsData.findUser(socket.id);
+    roomsData.removeUser(user, socket);
+  });
+
+  socket.on("disconnect", function() {
+    const user = roomsData.findUser(socket.id);
+    console.log("user disconnected", socket.id);
+    roomsData.removeUser(user, socket);
+  });
 };
 
 module.exports = {
