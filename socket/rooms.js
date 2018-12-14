@@ -28,7 +28,7 @@ const rooms = (socket, io) => {
     const { username } = payload;
     const newUser = new User(uuid(), username);
     const newRoom = roomsData.addRoom(username, [newUser]);
-    socket.join(`room${newId}`);
+    socket.join(`room${newRoom.roomId}`);
     socket.emit("createRoomSuccessful", newRoom);
   });
 

@@ -66,12 +66,4 @@ class RoomBuffer {
   }
 }
 
-const r = new RoomBuffer();
-r.addRoom({ userId: 1, username: "andrew" });
-r.addRoom({ userId: 2, username: "chris" }, [
-  { userId: 1, username: "andrew" }
-]);
-
-console.log(r);
-
 module.exports = RoomBuffer;
