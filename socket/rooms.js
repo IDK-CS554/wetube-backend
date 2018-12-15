@@ -46,6 +46,14 @@ const rooms = (socket, io) => {
     io.in(`room${roomId}`).emit("changeRoomType", { roomId, videoId });
   });
 
+  socket.on("playVideo", roomId => {
+	  io.in(`room${roomId}`).emit("playVideo");
+  });
+
+	socket.on("pauseVideo", roomId => {
+		io.in(`room${roomId}`).emit("pauseVideo");
+	})
+
   socket.on("exitRoom", () => {
     const user = roomsData.findUser(socket.id);
     roomsData.removeUser(user, socket);
