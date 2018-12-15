@@ -67,12 +67,16 @@ const rooms = async (socket, io) => {
     io.in(`room${roomId}`).emit("changeRoomType", { roomId, videoId });
   });
 
-  socket.on("playVideo", roomId => {
+  socket.on("playVideo", ({ roomId }) => {
     io.in(`room${roomId}`).emit("playVideo");
   });
 
   socket.on("pauseVideo", roomId => {
     io.in(`room${roomId}`).emit("pauseVideo");
+  });
+
+  socket.on("seekVideo", ({ roomId, currTime }) => {
+    socket.to(`room${roomId}`).emit("seekVideo", currTime);
   });
 
   socket.on("exitRoom", async () => {
