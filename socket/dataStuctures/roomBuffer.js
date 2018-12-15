@@ -2,8 +2,10 @@ const Room = require("./room");
 
 class RoomBuffer {
   // This is a data structure that holds Rooms
-  constructor() {
-    this.rooms = [];
+  constructor(rooms = []) {
+    this.rooms = rooms.map(
+      r => new Room(r.roomId, r.creator, r.users, r.time, r.videoId)
+    );
   }
 
   /**
@@ -23,14 +25,14 @@ class RoomBuffer {
     });
 
     return roomWithUser === undefined ? null : roomWithUser.findUser(socketId);
-  };
+  }
 
-	removeUser(user, socket) {
-	  this.rooms.forEach(room => {
-	    if (user) {
-		    room.removeUser(user.userId, socket);
+  removeUser(user, socket) {
+    this.rooms.forEach(room => {
+      if (user) {
+        room.removeUser(user.userId, socket);
       }
-    })
+    });
   }
 
   /**
@@ -48,6 +50,12 @@ class RoomBuffer {
   removeRoom(roomId) {
     const removeId = this.rooms.map(r => r.roomId).indexOf(roomId);
     this.rooms.splice(removeId, 1);
+  }
+
+  toObject() {
+    return {
+      rooms: this.rooms.map(r => r.toObject())
+    };
   }
 
   /**

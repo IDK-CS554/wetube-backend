@@ -5,15 +5,18 @@ var http = require("http").Server(app);
 const PORT = process.env.PORT || 5000;
 const io = require("socket.io")(http);
 const cors = require("cors");
+const redis = require("redis"),
+  client = redis.createClient();
 
 const { routes } = require("./routes");
 const { sockets } = require("./socket");
-let { roomsData } = require("./socket/rooms");
+let { getRooms } = require("./socket/rooms");
 
 // allow cross-origin
 app.use(cors());
 
 app.get("/getUsers/:roomId", (req, res) => {
+  const roomsData = getRooms();
   const roomId = parseInt(req.params.roomId);
 
   if (isNaN(roomId)) {

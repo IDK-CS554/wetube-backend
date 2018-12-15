@@ -1,3 +1,5 @@
+const User = require("./user");
+
 /**
  * Rooms will be an array of objects with the following structure:
  * [
@@ -23,9 +25,13 @@ class Room {
   constructor(roomId, creator, users = [], time = 0, videoId = "") {
     this.roomId = roomId;
     this.creator = creator;
-    this.users = users;
     this.videoId = videoId;
     this.time = time;
+    if (users instanceof User) {
+      this.users = users;
+    } else {
+      this.users = users.map(u => new User(u.userId, u.username, u.socketId));
+    }
   }
 
   addUser(user) {
@@ -34,15 +40,18 @@ class Room {
 
   removeUser(userId, socket) {
     const removeIndex = this.users.map(u => u.userId).indexOf(userId);
+    const roomId = this.roomId;
     console.log("removeIndex", removeIndex);
     if (removeIndex !== -1) {
+      if (this.users.length === 1) {
+        socket.to(`room${roomId}`).emit("roomEmpty", { roomId });
+      }
       const user = this.users[removeIndex];
       const username = user.username;
       const userId = user.userId;
       this.users.splice(removeIndex, 1);
-      const roomId = this.roomId;
-	    socket.to(`room${roomId}`).emit("userLeft", {username, roomId, userId});
-    };
+      socket.to(`room${roomId}`).emit("userLeft", { username, roomId, userId });
+    }
   }
 
   findUser(socketId) {
@@ -51,6 +60,16 @@ class Room {
     });
 
     return userFound === undefined ? false : userFound;
+  }
+
+  toObject() {
+    return {
+      roomId: this.roomId,
+      creator: this.creator,
+      users: this.users.map(u => u.toObject()),
+      videoId: this.videoId,
+      time: this.time
+    };
   }
 }
 
