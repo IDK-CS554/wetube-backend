@@ -5,8 +5,6 @@ var http = require("http").Server(app);
 const PORT = process.env.PORT || 5000;
 const io = require("socket.io")(http);
 const cors = require("cors");
-const redis = require("redis"),
-  client = redis.createClient();
 
 const { routes } = require("./routes");
 const { sockets } = require("./socket");
